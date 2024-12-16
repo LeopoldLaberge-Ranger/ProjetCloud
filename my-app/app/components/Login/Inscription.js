@@ -21,9 +21,9 @@ export default function Inscription() {
       // Création de l'utilisateur Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("Utilisateur créé :", userCredential.user);
-      router.push("/"); // Redirection vers la page d'accueil après inscription
+      location.reload(); // Redirection vers la page d'accueil après inscription
     } catch (err) {
-      setError("Erreur : " + err.message); // Affichage de l'erreur si l'inscription échoue
+      setError("Erreur d'inscription"); // Affichage de l'erreur si l'inscription échoue
     } finally {
       setLoading(false); // Fin du chargement
     }

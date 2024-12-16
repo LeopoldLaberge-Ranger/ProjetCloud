@@ -20,7 +20,7 @@ export default function Login() {
     return () => unsubscribe()
   }, [auth])
 
-  // Appelé lorsqu'on envoie le formulaire
+
   function submitForm(e) {
     e.preventDefault()
 
@@ -32,7 +32,7 @@ export default function Login() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCred) => {
         console.log(userCred.user)
-        window.location.href = '/';
+        location.reload()
       })
       .catch((error) => {
         console.log(error.message)

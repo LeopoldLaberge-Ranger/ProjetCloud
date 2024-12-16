@@ -1,54 +1,74 @@
-import React from 'react';
-import Image from 'next/image';
-import styles from '../styles/redditCard.scss';
+import React, { useEffect, useState } from "react";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import init from "../common/init";
 
 function ForumCard(props) {
-  console.log(props.post)
+  const { post } = props;
+  const [imageUrls, setImageUrls] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
 
-  const postDate = props.post.timeStamp
-  ? props.post.timeStamp.toDate().toLocaleString("en-ca", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  : "Unknown date";
-  console.log(postDate)
- 
+  useEffect(() => {
+    init();
+    const storage = getStorage();
+    const auth = init()
+
+    const fetchImages = async () => {
+      try {
+        const postImagesRef = ref(storage, `posts/${post.id}`);
+        const res = await listAll(postImagesRef);
+        
+        const urls = await Promise.all(
+          res.items.map((itemRef) => getDownloadURL(itemRef))
+        );
+        
+        setImageUrls(urls);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+        setImageUrls(["/default-image.png"]);
+      }
+    };
+
+    fetchImages();
+  }, [post.id]);
+
   return (
-    <div className={`card mb-4 ${styles.redditCard}`}>
-      <div className="d-flex align-items-center px-3 pt-3">
-        <button className="btn btn-light btn-sm me-2">
-          <i className="bi bi-arrow-up-circle"></i>
-        </button>
-        <span className="me-3">{props.post.upvotes}</span>
-        <div className="text-muted">
-          <small>
-            Posted by <a href={`/user/${props.post.user}`}>u/{props.post.user}</a> in{' '}
-            <a href={`/r/${props.post.subreddit}`}>r/{props.post.subreddit}</a> ·{' '}
-            {postDate} ago
-          </small>
-        </div>
-      </div>
+    <div className="card mb-4">
       <div className="card-body">
-        <h5 className="card-title">{props.post.titre}</h5>
-        <p className="card-text">{props.post.contenu}</p>
-          <Image
-            src={`/Images/${props.post.imageUrl}`}
-            alt="Post image"
-            width={500}
-            height={300}
-            className="img-fluid rounded"
-          />
-      </div>
-      <div className="card-footer d-flex justify-content-between align-items-center">
-        <a href={`/post/${props.post.id}`} className="text-muted">
-          <i className="bi bi-chat-dots me-1"></i> {props.post.comments} Comments
-        </a>
-        <button className="btn btn-outline-primary btn-sm">
-          <i className="bi bi-share-fill"></i> Share
-        </button>
-        <button className="btn btn-outline-secondary btn-sm">
-          <i className="bi bi-bookmark"></i> Save
-        </button>
+        <h5 className="card-title">{post.titre}</h5>
+        
+        <p className="card-text">{post.contenu}</p>
+
+        <div className="post-meta">
+        <p><strong>Author:</strong> {userEmail || "Anonymous"}</p>
+          <p><strong>Date:</strong> {new Date(post.Timestamp.toDate()).toLocaleDateString()}</p>
+
+        </div>
+
+        <div className="images-container">
+          {imageUrls.length > 0 ? (
+            imageUrls.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Post image ${index + 1}`}
+                width={500}
+                height={300}
+                className="img-fluid rounded mb-3"
+              />
+            ))
+          ) : (
+            <p>No images available</p>
+          )}
+        </div>
+
+        <div className="text-center">
+          <a
+            href={`/commentaire/${post.id}`}
+            className="btn btn-primary mt-3"
+          >
+            View Comments
+          </a>
+        </div>
       </div>
     </div>
   );
