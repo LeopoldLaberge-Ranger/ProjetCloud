@@ -25,6 +25,8 @@ const LoginModal = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
+                <img src="./R.png" className="bi me-2" width="32" height="32" role="img" aria-label="Bootstrap"/>
+                <p className="doto-header mb-0 me-5">ConnectHive</p>
               <button
                 type="button"
                 className="btn-close"

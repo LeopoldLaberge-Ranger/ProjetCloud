@@ -39,11 +39,12 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: rgb(236, 232, 191) !important;
 }
 
 #sidebar {
-  margin-top: 98px;
-  z-index: -1;
+  margin-top: 76px;
+  z-index: 5;
   border: solid 1px rgb(199, 194, 194);
 }
 

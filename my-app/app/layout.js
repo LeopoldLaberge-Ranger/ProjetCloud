@@ -2,8 +2,9 @@ import localFont from "next/font/local";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/variables.scss";
 import Header from "./components/header";
-import "./globals.css";
 import Sidebar from "./components/sidebar";
+import "./globals.css";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
